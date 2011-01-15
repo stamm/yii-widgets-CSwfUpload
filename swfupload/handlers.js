@@ -1,9 +1,9 @@
 function fileQueueError(file, errorCode, message) {
 	try {
-		var imageName = "/error.gif";
+		var imageName = "error.gif";
 		var errorName = "";
 		if (errorCode === SWFUpload.errorCode_QUEUE_LIMIT_EXCEEDED) {
-			errorName = "Has intentado subir demasiadas imagenes a la vez.";
+			errorName = "You have attempted to queue too many files.";
 		}
 
 		if (errorName !== "") {
@@ -13,10 +13,10 @@ function fileQueueError(file, errorCode, message) {
 
 		switch (errorCode) {
 		case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
-			imageName = "/zerobyte.gif";
+			imageName = "zerobyte.gif";
 			break;
 		case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
-			imageName = "/toobig.gif";
+			imageName = "toobig.gif";
 			break;
 		case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
 		case SWFUpload.QUEUE_ERROR.INVALID_FILETYPE:
@@ -25,7 +25,7 @@ function fileQueueError(file, errorCode, message) {
 			break;
 		}
 
-		addImage(swfuPath + imageName);
+		addImage(swfuPath + "/images/" + imageName);
 
 	} catch (ex) {
 		this.debug(ex);
@@ -51,10 +51,10 @@ function uploadProgress(file, bytesLoaded) {
 		var progress = new FileProgress(file,  this.customSettings.upload_target);
 		progress.setProgress(percent);
 		if (percent === 100) {
-			progress.setStatus("Creando Imagen...");
+			progress.setStatus("Creating thumbnail...");
 			progress.toggleCancel(false, this);
 		} else {
-			progress.setStatus("Subiendo...");
+			progress.setStatus("Uploading...");
 			progress.toggleCancel(true, this);
 		}
 	} catch (ex) {
@@ -69,10 +69,10 @@ function uploadSuccess(file, serverData) {
 		if (serverData.substring(0, 7) === "FILEID:") {
 			addImage(serverData.substring(7));
 
-			progress.setStatus("Imagen Creada.");
+			progress.setStatus("Thumbnail Created.");
 			progress.toggleCancel(false);
 		} else {
-			addImage(swfuPath + "/error.gif");
+			addImage(swfuPath + "/images/error.gif");
 			progress.setStatus("Error.");
 			progress.toggleCancel(false);
 			alert(serverData);
@@ -93,7 +93,7 @@ function uploadComplete(file) {
 		} else {
 			var progress = new FileProgress(file,  this.customSettings.upload_target);
 			progress.setComplete();
-			progress.setStatus("Todas las imagenes subidas.");
+			progress.setStatus("All images received.");
 			progress.toggleCancel(false);
 		}
 	} catch (ex) {
@@ -102,7 +102,7 @@ function uploadComplete(file) {
 }
 
 function uploadError(file, errorCode, message) {
-	var imageName =  "/error.gif";
+	var imageName =  "error.gif";
 	var progress;
 	try {
 		switch (errorCode) {
@@ -110,7 +110,7 @@ function uploadError(file, errorCode, message) {
 			try {
 				progress = new FileProgress(file,  this.customSettings.upload_target);
 				progress.setCancelled();
-				progress.setStatus("Cancelado");
+				progress.setStatus("Cancelled");
 				progress.toggleCancel(false);
 			}
 			catch (ex1) {
@@ -121,21 +121,21 @@ function uploadError(file, errorCode, message) {
 			try {
 				progress = new FileProgress(file,  this.customSettings.upload_target);
 				progress.setCancelled();
-				progress.setStatus("Parado");
+				progress.setStatus("Stopped");
 				progress.toggleCancel(true);
 			}
 			catch (ex2) {
 				this.debug(ex2);
 			}
 		case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
-			imageName = "/uploadlimit.gif";
+			imageName = "uploadlimit.gif";
 			break;
 		default:
 			alert(message);
 			break;
 		}
 
-		addImage(swfuPath + imageName);
+		addImage(swfuPath + "/images/" + imageName);
 
 	} catch (ex3) {
 		this.debug(ex3);
